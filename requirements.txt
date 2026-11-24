@@ -52,7 +52,7 @@ shapely>=2.0
 folium>=0.16
 
 # ---------- Component 3: BI Dashboard ----------
-streamlit>=1.35
+streamlit>=1.50            # plotly_chart(width="stretch") needs a recent release
 plotly>=5.22
 pydeck>=0.9              # map layers in Streamlit
 streamlit-folium>=0.20

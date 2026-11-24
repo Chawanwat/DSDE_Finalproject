@@ -12,7 +12,8 @@ QUALITY = MANIFEST + ["readable", "brightness", "blur_var", "phash",
 VEHICLE_COLS = ["car", "motorcycle", "bus", "truck"]
 DETECTIONS = ["path", "camera_id", "captured_at", *VEHICLE_COLS, "total"]
 FEATURES = DETECTIONS + ["hour", "weekday"]
-CAMERAS = ["camera_id", "name", "lat", "lon"]
+# data/reference/cctv_info.csv (columns the project relies on)
+CAMERAS = ["camera_id", "location_en", "latitude", "longitude"]
 
 
 def check_columns(df: pd.DataFrame, required: list[str], table: str) -> None:

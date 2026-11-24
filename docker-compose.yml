@@ -26,7 +26,6 @@ x-app: &app
 services:
   kafka:
     image: apache/kafka:3.8.0          # single-node KRaft (no ZooKeeper)
-    container_name: bkk-kafka
     ports:
       - "9092:9092"
     environment:
@@ -54,7 +53,6 @@ services:
 
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
-    container_name: bkk-kafka-ui
     ports:
       - "8080:8080"
     environment:
@@ -66,14 +64,12 @@ services:
 
   dashboard:
     <<: *app
-    container_name: bkk-dashboard
     command: streamlit run dashboard/app.py --server.address=0.0.0.0 --server.port=8501
     ports:
       - "8501:8501"
 
   jupyter:
     <<: *app
-    container_name: bkk-jupyter
     command: jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root --ServerApp.token='' --notebook-dir=/app
     ports:
       - "8888:8888"

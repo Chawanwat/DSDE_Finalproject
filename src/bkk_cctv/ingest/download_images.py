@@ -78,15 +78,21 @@ def download_images(force: bool = False, keep_zip: bool = False) -> None:
     elif raw_images.exists():
         shutil.rmtree(raw_images)
 
+    downloaded = False
     if force or not zip_path.exists() or not zipfile.is_zipfile(zip_path):
         _download(drive["images_zip_id"], zip_path)
+        downloaded = True
     _extract(zip_path, raw_images)
     (raw_images / DONE_MARKER).touch()
 
     n = sum(1 for p in raw_images.rglob("*") if p.suffix.lower() in IMAGE_EXTS)
     log.info(f"{n:,} images ready in {raw_images}")
-    if not keep_zip:
+    # Only remove a zip this run downloaded; a zip placed by hand (gdown quota
+    # workaround) is the user's copy and is kept.
+    if downloaded and not keep_zip:
         zip_path.unlink()
+    elif not downloaded:
+        log.info(f"Kept {zip_path} (was already there before this run)")
 
 
 if __name__ == "__main__":

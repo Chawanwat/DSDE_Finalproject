@@ -16,7 +16,8 @@ drive:
 clean:
   min_brightness: 20      # mean pixel value below this = too dark
   min_blur_var: 50        # Laplacian variance below this = too blurry
-  dup_hash_distance: 2    # perceptual-hash distance for duplicate/frozen frames
+  dup_max_pixel_diff: 1.0 # frozen frame: mean grey-level diff vs previous frame (16x16 thumb)
+  workers: null           # parallel processes for quality checks (null = all CPUs)
 
 detect:
   model: yolov8n.pt

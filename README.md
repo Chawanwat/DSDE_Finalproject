@@ -4,7 +4,39 @@ DSDE-CEDT 2110403 final project (2026/1). Turns raw BMA traffic-camera images
 from 100 cameras into structured traffic data, adds scraped external data,
 and presents insights in a dashboard.
 
-## Setup
+## Setup with Docker (recommended — includes Kafka)
+
+Needs Docker Desktop. One image holds Python 3.12 and everything in
+`requirements.txt` (pandas, YOLO/torch CPU, OpenCV, Playwright + Chromium,
+Prefect, Streamlit, Jupyter, confluent-kafka); Kafka runs as its own container.
+
+```bash
+cp .env.example .env                                # fill in API keys
+docker compose build                                # first time: ~10 min
+docker compose up -d                                # Kafka, Kafka UI, dashboard, Jupyter
+docker compose run --rm app python -m bkk_cctv.stream.kafka_io   # Kafka smoke test
+```
+
+| Service | URL / address |
+|---|---|
+| Dashboard (Streamlit) | http://localhost:8501 |
+| JupyterLab | http://localhost:8888 |
+| Kafka UI | http://localhost:8080 |
+| Kafka broker | `kafka:29092` inside containers, `localhost:9092` from your machine |
+
+```bash
+docker compose run --rm app bash                    # shell with all deps
+docker compose run --rm app python -m bkk_cctv.ingest.download_images
+docker compose --profile pipeline up pipeline       # full Prefect pipeline once
+docker compose down                                 # stop (add -v to wipe Kafka data)
+```
+
+The project folder is mounted at `/app`, so code edits and `data/` are shared
+with your machine and there is no need to rebuild after editing code. Rebuild only when
+`requirements.txt` changes. Docker on macOS can't use the GPU, so YOLO runs on
+CPU; run full detection on Colab or a GPU machine if it's too slow.
+
+## Setup without Docker
 
 ```bash
 python3.12 -m venv .venv && source .venv/bin/activate

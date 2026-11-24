@@ -4,7 +4,7 @@
 |---|---|
 | Project | Bangkok CCTV Image Analysis (DSDE-CEDT 2110403, 2026/1) |
 | Type | Data science / data engineering + computer vision |
-| Stack | Python 3.11–3.12 · pandas/Parquet/DuckDB · OpenCV · YOLO (ultralytics) · Prefect · requests/BS4/Playwright · scikit-learn/statsmodels · Streamlit/Plotly |
+| Stack | Python 3.11–3.12 · pandas/Parquet/DuckDB · OpenCV · YOLO (ultralytics) · Prefect · Kafka · Docker Compose · requests/BS4/Playwright · scikit-learn/statsmodels · Streamlit/Plotly |
 | Team | Small team (≤ 6 students) |
 | Stage | Development. Package due **Sun 6 Dec 2026** |
 | Deliverables | Source code, slides (PDF), 15-minute YouTube video, BI dashboard demo |
@@ -50,9 +50,15 @@ Design choices and reasons:
    Each stage checks them before writing, so a broken upstream stage fails
    immediately instead of silently corrupting the dashboard.
 
-What is deliberately **not** included: no web backend, no database server, no
-Docker or Kubernetes, no microservices. The grading criteria reward a working
-end-to-end workflow and insights, not deployment infrastructure.
+6. **Reproducible environment with Docker Compose.** One image (`Dockerfile`)
+   holds every Python dependency; `docker-compose.yml` adds a single-node
+   Kafka broker (KRaft) and Kafka UI. The project folder is mounted into the
+   containers, so the file-based handoff in `data/` works the same inside and
+   outside Docker. Kafka helpers live in `src/bkk_cctv/stream/kafka_io.py`.
+
+What is deliberately **not** included: no web backend, no Kubernetes, no
+microservices. The grading criteria reward a working end-to-end workflow and
+insights, not deployment infrastructure.
 
 ---
 
@@ -66,6 +72,9 @@ DSDE_Finalproject/
 ├── pyproject.toml               package metadata + pytest/ruff config
 ├── requirements.txt             all dependencies (installs the package with -e .)
 ├── .env.example                 template for secrets / local overrides
+├── Dockerfile                   one image with all Python dependencies
+├── docker-compose.yml           Kafka + Kafka UI + dashboard + Jupyter + pipeline
+├── .dockerignore
 ├── .gitignore
 │
 ├── .github/
@@ -97,6 +106,8 @@ DSDE_Finalproject/
 │       │   └── vehicle_detection.py
 │       ├── pipeline/            │
 │       │   └── flow.py          ┘
+│       ├── stream/              Kafka producer/consumer helpers
+│       │   └── kafka_io.py
 │       ├── scrape/              Required task: additional data
 │       │   ├── README.md
 │       │   ├── weather.py
@@ -183,6 +194,7 @@ script, notebook or the dashboard lives here.
 | `scrape/` | One module per external source, each with `fetch()` and `save()` | web/API → `external/<source>.parquet` |
 | `analysis/` | Join detections with camera and external data; features; models | detections + external → `processed/traffic_features.parquet` |
 | `pipeline/` | Prefect flow calling the stage functions in order | — |
+| `stream/` | Kafka producer/consumer helpers + smoke test | — |
 
 **Not stored here:** notebooks, charts, data files, one-off exploration code, or Streamlit UI code.
 **Dependency rule:** stages depend on `config`, `schemas` and `log`. They never

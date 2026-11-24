@@ -4,6 +4,7 @@
 #   python -m venv .venv && source .venv/bin/activate
 #   pip install -r requirements.txt   (also installs src/bkk_cctv in editable mode)
 #   playwright install chromium
+# Or with Docker (includes Kafka): docker compose up -d   (see README)
 
 # ---------- Core data handling ----------
 numpy>=1.26
@@ -24,6 +25,8 @@ opencv-python>=4.9
 imagehash>=4.3           # detect duplicate / frozen frames
 # Local analytical store
 duckdb>=1.0
+# Streaming / message queue (Kafka broker runs in docker-compose)
+confluent-kafka>=2.4
 
 # ---------- Image -> structured data (vehicle detection) ----------
 ultralytics>=8.2         # YOLO object detection (pulls in torch, torchvision)

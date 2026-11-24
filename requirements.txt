@@ -1,0 +1,66 @@
+# Bangkok CCTV Image Analysis — DSDE 2026/1 final project
+# Recommended: Python 3.11–3.12
+# Setup:
+#   python -m venv .venv && source .venv/bin/activate
+#   pip install -r requirements.txt   (also installs src/bkk_cctv in editable mode)
+#   playwright install chromium
+
+# ---------- Core data handling ----------
+numpy>=1.26
+pandas>=2.2
+pyarrow>=15.0            # Parquet storage for structured output
+python-dotenv>=1.0       # API keys / paths in .env
+pyyaml>=6.0              # config/config.yaml
+tqdm>=4.66
+
+# ---------- Component 1: Data Engineering ----------
+# Pull raw images from the shared Google Drive folder
+gdown>=5.1
+# Workflow orchestration (end-to-end pipeline)
+prefect>=2.19
+# Image cleansing / preparation (corrupt files, blur/dark detection, resizing)
+pillow>=10.3
+opencv-python>=4.9
+imagehash>=4.3           # detect duplicate / frozen frames
+# Local analytical store
+duckdb>=1.0
+
+# ---------- Image -> structured data (vehicle detection) ----------
+ultralytics>=8.2         # YOLO object detection (pulls in torch, torchvision)
+supervision>=0.21        # counting / zone utilities on top of detections
+
+# ---------- Required task: Web scraping / APIs ----------
+requests>=2.31
+httpx>=0.27
+beautifulsoup4>=4.12
+lxml>=5.2
+playwright>=1.44         # interactive sites (run `playwright install chromium`)
+
+# ---------- Component 2: Data Science ----------
+scipy>=1.13
+scikit-learn>=1.5
+statsmodels>=0.14        # time-series decomposition, regression
+matplotlib>=3.8
+seaborn>=0.13
+
+# ---------- Geospatial (100 camera locations) ----------
+geopandas>=0.14
+shapely>=2.0
+folium>=0.16
+
+# ---------- Component 3: BI Dashboard ----------
+streamlit>=1.35
+plotly>=5.22
+pydeck>=0.9              # map layers in Streamlit
+streamlit-folium>=0.20
+
+# ---------- Notebooks ----------
+jupyterlab>=4.2
+ipykernel>=6.29
+
+# ---------- Testing & code quality ----------
+pytest>=8.2
+ruff>=0.5
+
+# ---------- This project (src/bkk_cctv) ----------
+-e .

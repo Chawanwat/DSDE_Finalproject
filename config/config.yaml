@@ -1,0 +1,24 @@
+# Central config — all paths are relative to the project root
+paths:
+  raw_images: data/raw/images
+  interim: data/interim
+  processed: data/processed
+  external: data/external
+  reference: data/reference
+  models: models
+
+drive:
+  # Shared CCTV dataset folder from the project slides
+  folder_url: https://drive.google.com/drive/folders/1k2-KxXe4wbDmFGcGXI-pK7TdSXjBHTni
+
+clean:
+  min_brightness: 20      # mean pixel value below this = too dark
+  min_blur_var: 50        # Laplacian variance below this = too blurry
+  dup_hash_distance: 2    # perceptual-hash distance for duplicate/frozen frames
+
+detect:
+  model: yolov8n.pt
+  conf: 0.25
+  # COCO class ids: 2 car, 3 motorcycle, 5 bus, 7 truck
+  classes: [2, 3, 5, 7]
+  batch_size: 32

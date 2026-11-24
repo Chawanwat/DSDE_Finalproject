@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# Secrets
+.env
+
+# Data (raw CCTV images are large — keep out of git)
+data/**
+!data/**/
+!data/**/.gitkeep
+!data/reference/*.csv
+!data/reference/README.md
+*.parquet
+*.duckdb
+
+# Model weights
+models/**
+!models/.gitkeep
+*.pt
+runs/
+
+# Logs & tool caches
+logs/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+
+# OS
+.DS_Store

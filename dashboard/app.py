@@ -29,6 +29,6 @@ c3.metric("Avg vehicles / image", f"{df['total'].mean():.1f}")
 
 hourly = df.groupby("hour", as_index=False)["total"].mean()
 fig = px.line(hourly, x="hour", y="total", title="Average vehicles by hour")
-st.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(fig, width="stretch")
 
 # TODO: map of cameras (pydeck / folium), weather vs traffic, weekday heatmap

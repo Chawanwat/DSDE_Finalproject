@@ -17,7 +17,7 @@ Every table passed between pipeline stages. Column lists are enforced in code by
 |---|---|---|
 | camera_id | str | Camera identifier (folder name in raw data) |
 | captured_at | datetime (Asia/Bangkok) | When the image was taken |
-| path | str | Absolute path to the image file |
+| path | str | Image path relative to the project root (absolute only if `RAW_IMAGES_DIR` is outside it). Use `bkk_cctv.config.resolve()` to open it |
 
 ## quality = manifest +
 | Column | Type | Meaning |
@@ -33,7 +33,7 @@ Every table passed between pipeline stages. Column lists are enforced in code by
 | Column | Type | Meaning |
 |---|---|---|
 | path, camera_id, captured_at | | Carried over from quality |
-| car, motorcycle, bus, truck | int | YOLO detections per class (column only present if seen at least once) |
+| car, motorcycle, bus, truck | int | YOLO detections per class (0 if none) |
 | total | int | Sum of vehicle classes |
 
 ## traffic_features = detections +

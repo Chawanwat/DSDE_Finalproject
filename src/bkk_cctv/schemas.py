@@ -9,7 +9,8 @@ import pandas as pd
 MANIFEST = ["camera_id", "captured_at", "path"]
 QUALITY = MANIFEST + ["readable", "brightness", "blur_var", "phash",
                       "too_dark", "too_blurry", "is_duplicate", "is_usable"]
-DETECTIONS = ["path", "camera_id", "captured_at", "total"]
+VEHICLE_COLS = ["car", "motorcycle", "bus", "truck"]
+DETECTIONS = ["path", "camera_id", "captured_at", *VEHICLE_COLS, "total"]
 FEATURES = DETECTIONS + ["hour", "weekday"]
 CAMERAS = ["camera_id", "name", "lat", "lon"]
 

@@ -26,10 +26,14 @@ docker compose run --rm app python -m bkk_cctv.stream.kafka_io   # Kafka smoke t
 
 ```bash
 docker compose run --rm app bash                    # shell with all deps
-docker compose run --rm app python -m bkk_cctv.ingest.download_images
+docker compose --profile data up dataset           # download + unzip dataset into ./data/raw/images
 docker compose --profile pipeline up pipeline       # full Prefect pipeline once
 docker compose down                                 # stop (add -v to wipe Kafka data)
 ```
+
+The dataset is **not baked into the image** (≈1.6 GB zip). It is downloaded
+into `./data/raw/images` on your machine, and the containers read it from
+there through the mount. Download it once and every service can use it.
 
 The project folder is mounted at `/app`, so code edits and `data/` are shared
 with your machine and there is no need to rebuild after editing code. Rebuild only when

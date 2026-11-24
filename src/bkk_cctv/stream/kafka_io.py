@@ -9,6 +9,7 @@ Smoke test (sends one message and reads it back):
 """
 import json
 import os
+import time
 import uuid
 
 from confluent_kafka import Consumer, Producer
@@ -51,7 +52,9 @@ def smoke_test(topic: str = "healthcheck") -> None:
 
     consumer = get_consumer(group_id=f"smoke-{token}", topics=[topic])
     try:
-        for _ in range(30):
+        # Time-based (not message-count) loop: the topic keeps old smoke-test messages
+        deadline = time.monotonic() + 30
+        while time.monotonic() < deadline:
             msg = consumer.poll(1.0)
             if msg is None or msg.error():
                 continue

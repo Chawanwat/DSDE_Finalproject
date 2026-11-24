@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from bkk_cctv.config import load_config
+from bkk_cctv.config import load_config, to_rel
 from bkk_cctv.log import get_logger
 from bkk_cctv.schemas import MANIFEST, check_columns
 
@@ -22,7 +22,7 @@ def parse_image_path(path: Path) -> dict:
     return {
         "camera_id": path.parent.name,
         "captured_at": pd.to_datetime(path.stem, errors="coerce"),
-        "path": str(path),
+        "path": to_rel(path),
     }
 
 

@@ -10,6 +10,8 @@ paths:
 drive:
   # Shared CCTV dataset folder from the project slides
   folder_url: https://drive.google.com/drive/folders/1k2-KxXe4wbDmFGcGXI-pK7TdSXjBHTni
+  images_zip_id: 1mHP-N0qtbBy5IxhjZVovP_8g1Hw2H7dO   # cctv_images.zip (~1.6 GB)
+  info_file_id: 1VSCzWeNOV7ds_d9BNJ9i20_9JzyncL2F    # cctv_info.csv (100 cameras)
 
 clean:
   min_brightness: 20      # mean pixel value below this = too dark

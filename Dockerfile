@@ -1,6 +1,8 @@
 # Bangkok CCTV Image Analysis — one image for pipeline, scrapers, notebooks and dashboard
 # Build:  docker compose build
-FROM python:3.12-slim
+# Pinned to Debian bookworm: package names below (libglib2.0-0) and Playwright's
+# --with-deps are known to work there; plain 3.12-slim can move to a newer Debian.
+FROM python:3.12-slim-bookworm
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \

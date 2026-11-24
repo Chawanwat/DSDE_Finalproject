@@ -1,7 +1,8 @@
 # Usage
 #   docker compose up -d                      Kafka + Kafka UI + dashboard + Jupyter
 #   docker compose run --rm app bash          shell with every dependency installed
-#   docker compose --profile pipeline up pipeline     run the full Prefect pipeline once
+#   docker compose --profile data up dataset          download + extract the CCTV dataset (~1.6 GB zip)
+#   docker compose --profile pipeline up pipeline     dataset (if missing) + full Prefect pipeline
 #   docker compose down                       stop everything (add -v to wipe Kafka data)
 #
 # Ports: dashboard http://localhost:8501 · Jupyter http://localhost:8888
@@ -77,6 +78,14 @@ services:
     ports:
       - "8888:8888"
 
+  # Download + extract the dataset into ./data (once; skips if already there)
+  #   docker compose --profile data up dataset
+  dataset:
+    <<: *app
+    profiles: ["data", "pipeline"]
+    depends_on: {}
+    command: python -m bkk_cctv.ingest.download_images
+
   # Interactive shell: docker compose run --rm app bash
   app:
     <<: *app
@@ -88,6 +97,9 @@ services:
     <<: *app
     profiles: ["pipeline"]
     command: python -m bkk_cctv.pipeline.flow
+    depends_on:
+      dataset:
+        condition: service_completed_successfully
 
 volumes:
   kafka-data:

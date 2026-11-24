@@ -8,20 +8,23 @@ import imagehash
 import pandas as pd
 from PIL import Image
 
-from bkk_cctv.config import load_config
+from bkk_cctv.config import load_config, resolve
 from bkk_cctv.schemas import QUALITY, check_columns
 
 
 def image_metrics(path: str) -> dict:
+    path = str(resolve(path))
     img = cv2.imread(path)
     if img is None:
         return {"readable": False, "brightness": None, "blur_var": None, "phash": None}
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    with Image.open(path) as pil:
+        phash = str(imagehash.phash(pil))
     return {
         "readable": True,
         "brightness": float(gray.mean()),
         "blur_var": float(cv2.Laplacian(gray, cv2.CV_64F).var()),
-        "phash": str(imagehash.phash(Image.open(path))),
+        "phash": phash,
     }
 
 

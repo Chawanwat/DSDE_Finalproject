@@ -58,7 +58,7 @@ download → manifest → quality → YOLO detect → features ← scrape (weath
 | 5 | `download_images` ลบ zip ที่ผู้ใช้ดาวน์โหลดเอง (workaround gdown quota) | ✅ แก้แล้ว: ลบเฉพาะ zip ที่ดาวน์โหลดในรอบนั้น |
 | 6 | `st.plotly_chart(width="stretch")` แต่ requirements ระบุ Streamlit `>=1.35` | ✅ แก้แล้ว: `streamlit>=1.50` |
 | 7 | `container_name` ตายตัวใน docker-compose → รันสองโฟลเดอร์ (main + worktree) พร้อมกันไม่ได้ | ✅ แก้แล้ว: ลบ `container_name` ออก (port 9092/8501/8888/8080 ยังชนกันถ้ารันพร้อมกัน) |
-| 8 | โค้ดใน handoff (`to_rel`, `.extract_complete` ฯลฯ) ยังไม่ได้ commit ใน main | ⏳ อยู่ใน worktree นี้แล้ว รอ commit |
+| 8 | โค้ดใน handoff (`to_rel`, `.extract_complete` ฯลฯ) ยังไม่ได้ commit ใน main | ✅ commit ใน main แล้ว (`b38ea19`; bug fixes #1–#7 อยู่ใน `afddd0b`) |
 
 ข้อสังเกตที่ยังไม่ได้แก้ (ไม่ใช่ bug ของโค้ด):
 - มี JPEG 2 ไฟล์ที่ถูกตัดท้าย ("Premature end of JPEG file") — ยังอ่านได้แต่ภาพส่วนล่างอาจเป็นสีเทา
@@ -83,7 +83,7 @@ download → manifest → quality → YOLO detect → features ← scrape (weath
 6. เชื่อมกับจุดน้ำท่วมจาก Traffy: กล้องใกล้จุดน้ำท่วมอ่อนไหวกว่าไหม
 
 ## 7. TODO (เรียงตามความสำคัญ)
-- [ ] Commit โค้ดที่ค้างอยู่ + bug fixes
+- [x] Commit โค้ดที่ค้างอยู่ + bug fixes (`b38ea19`, `afddd0b`)
 - [ ] `weather.py`, `holidays.py` (มีร่างโค้ดแล้ว ถอดออกไว้ก่อน)
 - [ ] รัน YOLO บน Colab GPU → แชร์ `detections.parquet` ใน Drive ทีม
 - [ ] `build_features.py`: join กล้อง + weather + holidays, แก้ `schemas.py` + `data_dictionary.md` พร้อมกัน

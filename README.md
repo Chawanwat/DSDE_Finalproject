@@ -4,6 +4,24 @@ DSDE-CEDT 2110403 final project (2026/1). Turns raw BMA traffic-camera images
 from 100 cameras into structured traffic data, adds scraped external data,
 and presents insights in a dashboard.
 
+**Topic: does rain really make Bangkok traffic worse?** Vehicle density from
+YOLO is compared before / during / after rain (Open-Meteo) to find which
+cameras are most rain-sensitive. Due **Sun 6 Dec 2026**.
+
+| Doc | What's in it |
+|---|---|
+| [project.md](project.md) | Current status, dataset facts, bug log, TODO (Thai) |
+| [SETUP.md](SETUP.md) | Step-by-step setup, Colab GPU, troubleshooting (Thai) |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Design, folder tree, conventions, team workflow |
+| [docs/data_dictionary.md](docs/data_dictionary.md) | Columns of every table |
+
+## Dataset
+
+61,319 JPEG images from 100 cameras, 25–31 Aug 2026, roughly 06:00–21:00
+only, one frame per camera every ~10 minutes. Timestamps in file names are
+Asia/Bangkok local time. Camera metadata (location, lat/lon) is in
+`data/reference/cctv_info.csv`.
+
 ## Setup with Docker (recommended — includes Kafka)
 
 Needs Docker Desktop. One image holds Python 3.12 and everything in
@@ -11,7 +29,7 @@ Needs Docker Desktop. One image holds Python 3.12 and everything in
 Prefect, Streamlit, Jupyter, confluent-kafka); Kafka runs as its own container.
 
 ```bash
-cp .env.example .env                                # fill in API keys
+cp .env.example .env                                # optional overrides (Kafka, RAW_IMAGES_DIR)
 docker compose build                                # first time: ~10 min
 docker compose up -d                                # Kafka, Kafka UI, dashboard, Jupyter
 docker compose run --rm app python -m bkk_cctv.stream.kafka_io   # Kafka smoke test
@@ -46,14 +64,14 @@ CPU; run full detection on Colab or a GPU machine if it's too slow.
 python3.12 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt     # also installs src/bkk_cctv (editable)
 playwright install chromium
-cp .env.example .env                # fill in API keys
+cp .env.example .env                # optional overrides (Kafka, RAW_IMAGES_DIR)
 ```
 
 ## Project structure
 
 ```
 config/config.yaml     paths, thresholds, YOLO settings
-data/                  raw → interim → processed, + external/, reference/ (not in git)
+data/                  raw → interim → processed, + external/ (not in git); reference/ (in git)
 src/bkk_cctv/
   ingest/ clean/ detect/ pipeline/   Component 1: Data Engineering
   scrape/                            Required task: additional data
@@ -75,3 +93,21 @@ python -m bkk_cctv.pipeline.flow            # manifest → clean → detect → 
 streamlit run dashboard/app.py
 ruff check src tests dashboard && pytest
 ```
+
+Each stage also runs on its own with `python -m bkk_cctv.<stage>.<module>`
+(see [SETUP.md](SETUP.md)). No API keys are needed so far: Open-Meteo, the
+Google holiday calendar and Traffy Fondue are all public.
+
+## Status (2026-11-24)
+
+| Stage | Status |
+|---|---|
+| Download, manifest, quality checks | Done; run on all 61k images |
+| Vehicle detection (YOLO) | Works; full run should be on Colab GPU |
+| Scrapers (`weather`, `holidays`, `source3` = Traffy Fondue) | Stubs |
+| Features (`build_features`) | Adds only `hour` / `weekday`; no camera or weather join yet |
+| Dashboard | Skeleton only |
+
+`pipeline.flow` has not been run end to end on the full dataset yet (the YOLO
+step on CPU is slow for 61k images), and its output has no rain columns yet. Details and TODO:
+[project.md](project.md).
